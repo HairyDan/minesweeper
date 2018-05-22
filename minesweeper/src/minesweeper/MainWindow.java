@@ -1,9 +1,11 @@
 package minesweeper;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -29,10 +31,6 @@ public class MainWindow extends Application {
 		
 		
 		primaryStage.setTitle("Minesweeper");
-		Rectangle rec = new Rectangle(40,40);
-		rec.setX(20);
-		rec.setY(20);
-		root.getChildren().add(rec);
 		SetupGrid();
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -63,8 +61,18 @@ public class MainWindow extends Application {
 	public void DrawTiles() {
 		for (Tile[] tileVec : gameGrid) {
 			for (Tile tile : tileVec) {
-				System.out.println(tile.x*tileWidth-1+tileWidth);
-				root.getChildren().add(new Rectangle(tile.x*tileWidth+1,tile.y*tileHeight+1, tileWidth-2, tileWidth-2));
+				//System.out.println(tile.x*tileWidth-1+tileWidth);
+				Rectangle rect = new Rectangle(tile.x*tileWidth+1,tile.y*tileHeight+1, tileWidth-2, tileWidth-2);
+				tile.rect = rect;
+				rect.setOnMouseClicked(new EventHandler<MouseEvent>()
+		        {
+		            @Override
+		            public void handle(MouseEvent t) {
+		                rect.setFill(Color.RED);
+		            }
+		        });
+
+				root.getChildren().add(rect);
 			}
 		}
 	}
@@ -80,10 +88,12 @@ public class MainWindow extends Application {
 	private class Tile extends StackPane{
 		private int x, y;
 		private boolean hasBomb, flagged;
+		private Rectangle rect;
 				
 		public Tile(int inX, int inY) {
 			this.x = inX;
 			this.y = inY;
+			this.rect = rect;
 		}
 	}
 }
